@@ -1,0 +1,412 @@
+{
+  "info": {
+    "name": "Radiology AI API",
+    "description": "Complete API collection for AI-Powered Radiology Assistant",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"patient@example.com\",\n  \"username\": \"patient1\",\n  \"full_name\": \"John Doe\",\n  \"password\": \"password123\",\n  \"role\": \"patient\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"token\", jsonData.access_token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "patient1"
+                },
+                {
+                  "key": "password",
+                  "value": "password123"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/patients/me",
+              "host": ["{{base_url}}"],
+              "path": ["patients", "me"]
+            }
+          }
+        },
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "path/to/your/image.jpg"
+                },
+                {
+                  "key": "modality",
+                  "value": "xray",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Chest X-ray",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/patients/upload-image",
+              "host": ["{{base_url}}"],
+              "path": ["patients", "upload-image"]
+            }
+          }
+        },
+        {
+          "name": "Analyze Scan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/patients/scans/1/analyze",
+              "host": ["{{base_url}}"],
+              "path": ["patients", "scans", "1", "analyze"]
+            }
+          }
+        },
+        {
+          "name": "Get My Scans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/patients/scans",
+              "host": ["{{base_url}}"],
+              "path": ["patients", "scans"]
+            }
+          }
+        },
+        {
+          "name": "Get My Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/patients/reports",
+              "host": ["{{base_url}}"],
+              "path": ["patients", "reports"]
+            }
+          }
+        },
+        {
+          "name": "Get Health Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/patients/health-summary",
+              "host": ["{{base_url}}"],
+              "path": ["patients", "health-summary"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Services",
+      "item": [
+        {
+          "name": "Chat with AI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What does opacity in lungs mean?\",\n  \"session_id\": null\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ai/chat",
+              "host": ["{{base_url}}"],
+              "path": ["ai", "chat"]
+            }
+          }
+        },
+        {
+          "name": "Classify Disease",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symptoms\": \"Persistent cough, fever, chest pain\",\n  \"medical_history\": \"Smoker for 10 years\",\n  \"scan_findings\": \"Opacity in right lower lobe\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ai/classify-disease",
+              "host": ["{{base_url}}"],
+              "path": ["ai", "classify-disease"]
+            }
+          }
+        },
+        {
+          "name": "Suggest Medicines",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/ai/suggest-medicines?disease_classification=Pneumonia&symptoms=Cough,Fever&patient_age=45",
+              "host": ["{{base_url}}"],
+              "path": ["ai", "suggest-medicines"],
+              "query": [
+                {
+                  "key": "disease_classification",
+                  "value": "Pneumonia"
+                },
+                {
+                  "key": "symptoms",
+                  "value": "Cough,Fever"
+                },
+                {
+                  "key": "patient_age",
+                  "value": "45"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Doctors",
+      "item": [
+        {
+          "name": "Get All Patients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/doctors/patients",
+              "host": ["{{base_url}}"],
+              "path": ["doctors", "patients"]
+            }
+          }
+        },
+        {
+          "name": "Generate Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": 1,\n  \"scan_id\": 1,\n  \"report_type\": \"AI Generated Radiology Report\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/doctors/generate-report",
+              "host": ["{{base_url}}"],
+              "path": ["doctors", "generate-report"]
+            }
+          }
+        },
+        {
+          "name": "Validate Report",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctor_notes\": \"Confirmed AI findings\",\n  \"diagnosis\": \"Pneumonia - Right lower lobe\",\n  \"recommended_treatment\": \"Antibiotics course\",\n  \"medicine_suggestions\": null,\n  \"status\": \"validated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/doctors/reports/1/validate",
+              "host": ["{{base_url}}"],
+              "path": ["doctors", "reports", "1", "validate"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get System Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/system-stats",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "system-stats"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
